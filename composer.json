@@ -1,0 +1,15 @@
+{
+    "name": "htlinc/htle-client-example",
+    "authors": [
+        {
+            "name": "Amadeo Thomas",
+            "email": "amadeo@hashtag-labs.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^2.4",
+        "guzzlehttp/guzzle": "^6.3",
+        "kamermans/guzzle-oauth2-subscriber": "~1.0",
+        "symfony/var-dumper": "^3.3"
+    }
+}
