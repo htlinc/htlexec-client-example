@@ -40,7 +40,7 @@ $dotenv = new Dotenv(__DIR__, '.env');
 $dotenv->overload();
 
 $token = getenv('OAUTH2_TOKEN');
-$baseUri = getenv('BASE_URL');
+$baseUri = getenv('BASE_URI').'oauth/';
 
 $client = new Guzzle(['base_uri' => $baseUri]);
 
