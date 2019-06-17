@@ -5,6 +5,15 @@ require('vendor/autoload.php');
 use Dotenv\Dotenv;
 use GuzzleHttp\Client as Guzzle;
 
+// usage message
+$usage  = "Usage: \n";
+$usage .= "  php main.php get-publisher\n";
+$usage .= "  php main.php get-datasets\n";
+$usage .= "  php main.php get-data <dataset_id>\n";
+$usage .= "  php main.php get-dashboards\n";
+$usage .= "  php main.php get-widgets <dashboard_id>\n";
+$usage .= "  php main.php get-widget-data <dashboard_id> <widget_id>\n\n\n";
+
 // read environment variables 'OAUTH2_TOKEN' and 'BASE_URI'
 $dotenv = new Dotenv(__DIR__, '.env');
 $dotenv->overload();
@@ -14,7 +23,7 @@ $BASE_URI = getenv('BASE_URI');
 // setup HTTP client
 $client = new Guzzle([
     'headers' => [
-        'Authorization' => 'Bearer ' . $token,
+        'Authorization' => 'Bearer ' . $TOKEN,
         'Accept'        => 'application/json',
     ],
     'verify' => false,
@@ -34,86 +43,39 @@ else if ($command == 'get-datasets')
 }
 else if ($command == 'get-data')
 {
+    if (count($argv) != 3) {
+        throw new \Exception("Missing <dataset_id>\n\n$usage");
+    }
     $datasetId = $argv[2];
     $response = $client->request('GET', "$BASE_URI/datasets/$datasetId");
 }
 else if ($command == 'get-dashboards')
 {
-    $dashboardId = $argv[2];
-    $response = $client->request('GET', "$BASE_URI/dashboards/$dashboardId");
+    $response = $client->request('GET', "$BASE_URI/dashboards");
 }
 else if ($command == 'get-widgets')
 {
+    if (count($argv) != 3) {
+        throw new \Exception("Missing <dashboard_id>\n\n$usage");
+    }
     $dashboardId = $argv[2];
     $response = $client->request('GET', "$BASE_URI/dashboards/$dashboardId");
 }
 else if ($command == 'get-widget-data')
 {
+    if (count($argv) != 4) {
+        throw new \Exception("Missing <dashboard_id> or <widget_id>\n\n$usage");
+    }
     $dashboardId = $argv[2];
     $widgetId = $argv[3];
     $response = $client->request('GET', "$BASE_URI/dashboards/$dashboardId/widgets/$widgetId");
 }
 else
 {
-    throw new \Exception("Invalid command");
+    throw new \Exception("Unknown command\n\n$usage");
+    exit($message);
 }
 
 // print JSON result
 $data = json_decode((string)$response->getBody(), true);
 dump($data);
-exit();
-
-//$entityId = isset($argv[2]) ? $argv[2] : null;
-//$widgetId = isset($argv[3]) ? $argv[3] : null;
-//
-//switch ($command) {
-//    case 'get-publishers':
-//        $uri = 'publishers';
-//        break;
-//
-//    case 'get-datasets' :
-//        $uri = "datasets";
-//        break;
-//
-//    case 'get-data' :
-//        if (!$entityId) {
-//            dump('Please include a dataset id');
-//            exit();
-//        }
-//        $uri = "datasets/$entityId";
-//        break;
-//
-//    case 'get-dashboards' :
-//        $uri = "dashboards";
-//        break;
-//
-//    case 'get-widgets' :
-//        if (!$entityId) {
-//            dump('Please include a dashboard id');
-//            exit();
-//        }
-//        $uri = "dashboards/$entityId";
-//        break;
-//
-//    case 'get-widget-data' :
-//        if (!$entityId || !$widgetId) {
-//            dump('Please include a dashboard and widget id');
-//            exit();
-//        }
-//        $uri = "dashboards/$entityId/widgets/$widgetId";
-//        break;
-//
-//    default:
-//        dump('Not a valid command');
-//        exit();
-//        break;
-//}
-
-
-
-
-//$response = $client->request('GET', $uri, [
-//    'headers' => $headers
-//]);
-
-
