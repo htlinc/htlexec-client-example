@@ -43,11 +43,17 @@ else if ($command == 'get-datasets')
 }
 else if ($command == 'get-data')
 {
-    if (count($argv) != 3) {
+    if (count($argv) < 3) {
         throw new \Exception("Missing <dataset_id>\n\n$usage");
     }
     $datasetId = $argv[2];
-    $response = $client->request('GET', "$BASE_URI/datasets/$datasetId");
+    $startDate = isset($argv[3]) ? $argv[3] : null;
+    $endDate   = isset($argv[4]) ? $argv[4] : null;
+    $url = "$BASE_URI/datasets/$datasetId";
+    if ($startDate && $endDate) {
+        $url = $url."?start_date=$startDate&end_date=$endDate";
+    }
+    $response = $client->request('GET', $url);
 }
 else if ($command == 'get-dashboards')
 {
